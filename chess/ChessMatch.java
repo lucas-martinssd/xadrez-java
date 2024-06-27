@@ -1,13 +1,16 @@
 package chess;
 
+import java.util.Scanner;
+
 import boardgame.Board;
+import boardgame.BoardException;
+import boardgame.Piece;
 import boardgame.Position;
 import chess.pieces.King;
 import chess.pieces.Rook;
 
 public class ChessMatch {
     private Board board;
-     
 
     public ChessMatch() {
         board = new Board(8, 8);
@@ -23,6 +26,30 @@ public class ChessMatch {
             }
         }
         return mat;
+    }
+
+    public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
+        Position source = sourcePosition.toPosition();
+        Position target = targetPosition.toPosition();
+        validateSourcePosition(source);
+        Piece capturedPiece = makeMove(source, target);
+        return (ChessPiece)capturedPiece;
+    }
+
+    //Valida a posição escolhida
+    public void validateSourcePosition(Position position){
+        if (!board.therelsAPiece(position)){
+            throw new ChessException("There is no piece on source position");
+        }
+    }
+
+    //Faz a peça se mover para a posição determinada
+    public Piece makeMove(Position source, Position target){
+        Piece p = board.removePiece(source);
+        Piece capturedPiece = board.removePiece(target);
+        board.placePiece(p, target);
+        return capturedPiece;
+
     }
 
     //Método que retorna a posição da peça de xadrez
